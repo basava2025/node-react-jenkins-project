@@ -5,13 +5,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo "Building application..."
+                bat 'npm install'
             }
         }
 
         stage('Test') {
             steps {
-                echo "Running tests..."
+                bat 'npm test'
             }
         }
 
@@ -20,7 +20,7 @@ pipeline {
                 branch 'develop'
             }
             steps {
-                echo "Deploying to STAGING environment"
+                echo "Deploying to STAGING"
             }
         }
 
@@ -29,7 +29,7 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo "Deploying to PRODUCTION environment"
+                echo "Deploying to PRODUCTION"
             }
         }
     }
