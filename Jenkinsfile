@@ -1,6 +1,15 @@
 pipeline {
     agent any
 
+    parameters {
+        extendedChoice(
+            name: 'COMPONENTS',
+            type: 'PT_CHECKBOX',
+            value: 'frontend,backend,database',
+            description: 'Select components to deploy'
+        )
+    }
+
     environment {
         CI = 'true'
     }
@@ -22,16 +31,25 @@ pipeline {
         stage('Deliver') {
             steps {
                 echo "Starting application..."
+                bat 'npm run build'
+            }
+        }
 
-                // Run app (example)
-                bat 'npm start'
+        stage('Deploy Selected Components') {
+            steps {
+                script {
+                    def selected = params.COMPONENTS.split(',')
 
-                input message: 'Finished using the web site? Click Proceed to stop'
-
-                echo "Stopping application..."
-
-                // Kill process (Windows way)
-                bat 'taskkill /F /IM node.exe || exit 0'
+                    if (selected.contains('frontend')) {
+                        echo "Deploying Frontend"
+                    }
+                    if (selected.contains('backend')) {
+                        echo "Deploying Backend"
+                    }
+                    if (selected.contains('database')) {
+                        echo "Deploying Database"
+                    }
+                }
             }
         }
     }
